@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Ex03.GarageLogic
 {
-    class Electic : EnergySource
+    class Electric : EnergySource
     {
-        public Electic(float i_CurrentEnergyAmount, float i_MaxEnergyAmount)
+        public Electric(float i_CurrentEnergyAmount, float i_MaxEnergyAmount)
         {
 		    // m_CurrentEnergyAmount = i_CurrentEnergyAmount
 

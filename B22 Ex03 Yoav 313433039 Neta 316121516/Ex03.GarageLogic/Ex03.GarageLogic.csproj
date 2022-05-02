@@ -37,13 +37,15 @@
   <ItemGroup>
     <Compile Include="eFuelType.cs" />
     <Compile Include="eNumberOfWheelsByType.cs" />
+    <Compile Include="eSpecificVehicleCharacteristics.cs" />
     <Compile Include="eVehicleStatus.cs" />
     <Compile Include="eVehicleType.cs" />
     <Compile Include="Garage.cs" />
+    <Compile Include="CustomerTicket.cs" />
+    <Compile Include="ValueOutOfRangeException.cs" />
     <Compile Include="VehicleFactory.cs" />
-    <Compile Include="VehicleOwner.cs" />
     <Compile Include="Vehicles\Car.cs" />
-    <Compile Include="EnergySources\Electic.cs" />
+    <Compile Include="EnergySources\Electric.cs" />
     <Compile Include="AbstarctClasses\EnergySource.cs" />
     <Compile Include="EnergySources\Fuel.cs" />
     <Compile Include="Vehicles\Motorcycle.cs" />

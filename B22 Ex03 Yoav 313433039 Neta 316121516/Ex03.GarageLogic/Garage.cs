@@ -5,11 +5,16 @@ using System.Text;
 
 namespace Ex03.GarageLogic
 {
-    class Garage
+    public class Garage
     {
-		Dictionary<string, VehicleOwner> vehiclesInGarage
+        Dictionary<string, CustomerTicket> m_VehiclesInGarage;
 
-		public void AddVehicleToGarage()
+        public bool IsVehiclesInGarage(string i_LicensePlate)
+        {
+            return m_VehiclesInGarage.ContainsKey(i_LicensePlate);
+        }
+
+        public void AddVehicleToGarage()
         {
 
         }

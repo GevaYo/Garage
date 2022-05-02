@@ -12,5 +12,7 @@ namespace Ex03.GarageLogic
         float m_EnergySourcePercentage;
         List<Wheel> m_WheelsInVehicle;
         EnergySource m_EnergySource;
+
+        
     }
 }

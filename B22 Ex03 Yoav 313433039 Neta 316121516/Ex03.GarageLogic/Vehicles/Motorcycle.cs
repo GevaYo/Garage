@@ -9,6 +9,6 @@ namespace Ex03.GarageLogic
     {
         enum eLicenseType { A, A1, B1, BB }
         readonly eLicenseType r_LicenseType;
-        readonly int r_EngineCapacity;
+        readonly int r_EngineVolume;
     }
 }
