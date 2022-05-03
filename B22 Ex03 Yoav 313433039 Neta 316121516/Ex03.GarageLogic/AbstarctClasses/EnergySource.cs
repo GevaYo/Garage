@@ -7,8 +7,26 @@ namespace Ex03.GarageLogic
 {
     class EnergySource
     {
-        float m_CurrentEnergyAmount;
-        readonly float r_MaxEnergyAmount;
+        protected float m_CurrentEnergyAmount = 0;
+        protected readonly float r_MaxEnergyAmount;
+
+        protected EnergySource(float i_MaxEnergyAmount)
+        {
+            r_MaxEnergyAmount = i_MaxEnergyAmount;
+        }
+
+        /*public float MaxEnergyAmount
+        {
+            get
+            {
+                return m_MaxEnergyAmount;
+            }
+
+            set
+            {
+                m_MaxEnergyAmount = value;
+            }
+        }*/
 
         public virtual void AddEnergyToVehicle(float i_EnergyToAdd)
         {

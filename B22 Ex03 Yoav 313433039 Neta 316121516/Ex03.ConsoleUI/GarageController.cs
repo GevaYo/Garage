@@ -8,7 +8,7 @@ namespace Ex03.ConsoleUI
 {
     public class GarageController
     {
-        private Garage m_Garage = new Garage();
+        private readonly Garage r_Garage = new Garage();
 
         public void Run()
         {
@@ -30,7 +30,7 @@ namespace Ex03.ConsoleUI
             // 1. get license plate
             string licensePlate = Console.ReadLine();
 
-            if (m_Garage.IsVehiclesInGarage(licensePlate))
+            if (r_Garage.IsVehiclesInGarage(licensePlate))
             {
                 // update car status
                 // print message

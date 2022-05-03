@@ -7,11 +7,7 @@ namespace Ex03.GarageLogic
 {
     class Electric : EnergySource
     {
-        public Electric(float i_CurrentEnergyAmount, float i_MaxEnergyAmount)
-        {
-		    // m_CurrentEnergyAmount = i_CurrentEnergyAmount
-
-        }
+        public Electric(float i_MaxEnergyAmount) : base(i_MaxEnergyAmount) { }
         public override void AddEnergyToVehicle(float i_NumOfHoursToAdd)
         {
 

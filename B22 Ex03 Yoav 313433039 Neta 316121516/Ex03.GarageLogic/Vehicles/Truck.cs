@@ -7,7 +7,13 @@ namespace Ex03.GarageLogic
 {
     class Truck : Vehicle
     {
-        bool m_IsDeliveringCargoInCooling;
-        float m_CargoCapacity;
+        private bool m_IsDeliveringCargoInCooling;
+        private float m_CargoCapacity;
+
+        public Truck(EnergySource i_EnergySource) : base(16, 24)
+        {
+            m_EnergySource = i_EnergySource;
+            
+        }
     }
 }

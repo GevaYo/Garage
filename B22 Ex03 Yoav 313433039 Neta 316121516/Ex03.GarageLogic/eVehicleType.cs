@@ -5,5 +5,5 @@ using System.Text;
 
 namespace Ex03.GarageLogic
 {
-    public enum eVehicleType { TEMP };
+    public enum eVehicleType { ElectricMotorcycle, FuelMotorcycle, ElectricCar, FuelCar, Truck };
 }

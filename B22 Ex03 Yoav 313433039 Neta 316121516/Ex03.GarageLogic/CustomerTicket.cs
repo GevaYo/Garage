@@ -7,10 +7,10 @@ namespace Ex03.GarageLogic
 {
     class CustomerTicket
     {
-        string m_CustomerName;
-        string m_CustomerPhoneNumber;
-        eVehicleStatus m_VehicleStatus;
-        Vehicle m_Vehicle;
+        private string m_CustomerName;
+        private string m_CustomerPhoneNumber;
+        private eVehicleStatus m_VehicleStatus;
+        private Vehicle m_Vehicle;
 
         /*
          // getHashCode --> by r_LicensePlateId
