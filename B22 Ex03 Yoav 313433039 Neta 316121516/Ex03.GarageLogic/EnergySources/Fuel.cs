@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ex03.GarageLogic
 {
-    class Fuel : EnergySource
+    internal class Fuel : EnergySource
     {
         private readonly eFuelType r_FuelType;
 
@@ -14,9 +14,11 @@ namespace Ex03.GarageLogic
             r_FuelType = i_FuelType;
         }
 
-        public override void AddEnergyToVehicle(float i_NumOfLitersToAdd)
+        public override void AddEnergyToVehicle(float i_NumOfLitersToAdd)   // list
         {
-
+            // , eFuelType i_FuelType
+            // i_FuelType == r_FuelType
+            // if yes => add fuel
         }
     }
 }

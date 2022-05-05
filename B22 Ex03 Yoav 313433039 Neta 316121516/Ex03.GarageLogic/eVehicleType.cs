@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Ex03.GarageLogic
+﻿namespace Ex03.GarageLogic
 {
-    public enum eVehicleType { ElectricMotorcycle, FuelMotorcycle, ElectricCar, FuelCar, Truck };
+    public enum eVehicleType
+    {
+        ELECTRIC_MOTORCYCLE = 1,
+        FUEL_MOTORCYCLE,
+        ELECTRIC_CAR,
+        FUEL_CAR,
+        TRUCK
+    }
 }

@@ -1,54 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Ex03.GarageLogic
+﻿namespace Ex03.GarageLogic
 {
-    class VehicleFactory
+    internal class VehicleFactory
     {
-        public Vehicle CreateNewVehicle(eVehicleType i_VehicleType)
+        public static Vehicle CreateNewVehicle(eVehicleType i_VehicleType)
         {
             Vehicle vehicle = null;
             EnergySource energySource = getEnergySourceByVehicleType(i_VehicleType);
 
             switch (i_VehicleType)
             {
-                case eVehicleType.ElectricMotorcycle:
-                case eVehicleType.FuelMotorcycle:
+                case eVehicleType.ELECTRIC_MOTORCYCLE:
+                case eVehicleType.FUEL_MOTORCYCLE:
                     vehicle = new Motorcycle(energySource);
                     break;
-                case eVehicleType.ElectricCar:
-                case eVehicleType.FuelCar:
+                case eVehicleType.ELECTRIC_CAR:
+                case eVehicleType.FUEL_CAR:
                     vehicle = new Car(energySource);
                     break;
-                case eVehicleType.Truck:
+                case eVehicleType.TRUCK:
                     vehicle = new Truck(energySource);
                     break;
             }
 
             return vehicle;
         }
-        
-        private EnergySource getEnergySourceByVehicleType(eVehicleType i_VehicleType)
+
+        private static EnergySource getEnergySourceByVehicleType(eVehicleType i_VehicleType)
         {
             EnergySource energySource = null;
 
             switch(i_VehicleType)
             {
-                case eVehicleType.ElectricMotorcycle:
+                case eVehicleType.ELECTRIC_MOTORCYCLE:
                     energySource = new Electric(2.5f);
                     break;
-                case eVehicleType.FuelMotorcycle:
+                case eVehicleType.FUEL_MOTORCYCLE:
                     energySource = new Fuel(6.2f, eFuelType.Octan98);
                     break;
-                case eVehicleType.ElectricCar:
+                case eVehicleType.ELECTRIC_CAR:
                     energySource = new Electric(3.3f);
                     break;
-                case eVehicleType.FuelCar:
+                case eVehicleType.FUEL_CAR:
                     energySource = new Fuel(38f, eFuelType.Octan95);
                     break;
-                case eVehicleType.Truck:
+                case eVehicleType.TRUCK:
                     energySource = new Fuel(120f, eFuelType.Soler);
                     break;
             }

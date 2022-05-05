@@ -5,13 +5,21 @@ using System.Text;
 
 namespace Ex03.GarageLogic
 {
-    class Car : Vehicle
+    internal class Car : Vehicle
     {
-        public enum eCarColors { RED, WHITE, GREEN, BLUE }
-        private eCarColors m_Color;
-        private readonly byte r_NumOfDoors;
+        public enum eCarColors 
+        {
+            RED,
+            WHITE,
+            GREEN,
+            BLUE
+        }
 
-        public Car(EnergySource i_EnergySource) : base(4, 29)
+        private readonly byte r_NumOfDoors;
+        private eCarColors m_Color;
+
+        public Car(EnergySource i_EnergySource)
+            : base(4, 29)       // int i_NumOfWheels, float i_MaxAirPressure
         {
             m_EnergySource = i_EnergySource;
         }

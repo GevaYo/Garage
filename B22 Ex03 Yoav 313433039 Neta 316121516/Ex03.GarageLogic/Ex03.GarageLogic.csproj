@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\..\CSharpEx02\Rule Set For Ex02.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,13 +47,19 @@
     <Compile Include="VehicleFactory.cs" />
     <Compile Include="Vehicles\Car.cs" />
     <Compile Include="EnergySources\Electric.cs" />
-    <Compile Include="AbstarctClasses\EnergySource.cs" />
+    <Compile Include="AbstarctLayout\EnergySource.cs" />
     <Compile Include="EnergySources\Fuel.cs" />
     <Compile Include="Vehicles\Motorcycle.cs" />
     <Compile Include="Vehicles\Truck.cs" />
-    <Compile Include="AbstarctClasses\Vehicle.cs" />
+    <Compile Include="AbstarctLayout\Vehicle.cs" />
     <Compile Include="Wheel.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

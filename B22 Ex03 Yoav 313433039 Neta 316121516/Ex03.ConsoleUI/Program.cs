@@ -6,8 +6,8 @@ namespace Ex03.ConsoleUI
     {
         public static void Main()
         {
-            /*GameController game = new GameController();
-            game.Run();*/
+            GarageController garage = new GarageController();
+            garage.Run();
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ex03.GarageLogic
 {
-    class EnergySource
+    internal class EnergySource
     {
         protected float m_CurrentEnergyAmount = 0;
         protected readonly float r_MaxEnergyAmount;
@@ -28,9 +28,9 @@ namespace Ex03.GarageLogic
             }
         }*/
 
-        public virtual void AddEnergyToVehicle(float i_EnergyToAdd)
+        public virtual void AddEnergyToVehicle(float i_EnergyToAdd) // list
         {
-
+            m_CurrentEnergyAmount += i_EnergyToAdd;
         }
     }
 }
