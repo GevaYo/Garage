@@ -7,23 +7,22 @@ namespace Ex03.GarageLogic
 {
     public class Garage
     {
-        //private readonly List<string> r_VehicleTypeParsedFromEnum = new List<string>();
+        //private static Dictionary<string, List<string>> s_ListOfSpecificParamsToUser;
         private Dictionary<string, CustomerTicket> m_VehiclesInGarage = new Dictionary<string, CustomerTicket>();
-        private CustomerTicket m_NewCustomerInQueue = null;
+        private CustomerTicket m_CurrentlyTreatedCustomer = null;
 
-        /*public Garage()
+        /*static Garage()
         {
-            foreach(string vehicleType in Enum.GetNames(typeof(eVehicleType)))
-            {
-                r_VehicleTypeParsedFromEnum.Add(vehicleType.Replace("_", " ").ToLower());
-            }
+            appendQuestionsDictionaryToContainerDictionary(EnergySource.ListOfSpecificParamsToUser());
+            appendQuestionsDictionaryToContainerDictionary(Wheel.ListOfSpecificParamsToUser());
+            appendQuestionsDictionaryToContainerDictionary(Vehicle.ListOfSpecificParamsToUser());
         }*/
 
-        /*public List<string> VehicleTypeParsedFromEnum
+        /*private static void appendQuestionsDictionaryToContainerDictionary(Dictionary<string, List<string>> i_DictToAppend)
         {
-            get
+            foreach (KeyValuePair<string, List<string>> item in i_DictToAppend)
             {
-                return r_VehicleTypeParsedFromEnum;
+                s_ListOfSpecificParamsToUser.Add(item.Key, item.Value);
             }
         }*/
 
@@ -37,16 +36,51 @@ namespace Ex03.GarageLogic
             eVehicleType customerVehicleType = (eVehicleType)io_CustomerVehicleType;
             Vehicle newVehicle = VehicleFactory.CreateNewVehicle(customerVehicleType);
             CustomerTicket newCustomer = new CustomerTicket(newVehicle, io_CustomerName, io_CustomerPhone);
-            m_NewCustomerInQueue = newCustomer;
+            m_CurrentlyTreatedCustomer = newCustomer;
         }
 
-        public void UpdateNewCustomerInQueue(Dictionary<string, string> i_CustomerDetails)
+        public Dictionary<string, Dictionary<int, string>> GetListOfQuestionsToInitiateVehicle()
+        {
+            Dictionary<string, Dictionary<int, string>> questionsToUser = new Dictionary<string, Dictionary<int, string>>();
+            Dictionary<int, string> dictForType = new Dictionary<int, string>();
+            EnergySource src = m_CurrentlyTreatedCustomer.Vehicle.EnergySource;
+            Type srcType = src.GetType();
+            List<string> questionsByType = src.ListOfSpecificParamsToUser(srcType.Name);
+            int questionNumber = 3;
+
+            dictForType.Add(1, "license_plate");
+            dictForType.Add(2, "vehicle model");
+            questionsToUser.Add("customerDetails", dictForType);
+            dictForType.Clear();
+
+            foreach (string question in questionsByType)
+            {
+                dictForType.Add(questionNumber, question);
+                ++questionNumber;
+            }
+
+            questionsToUser.Add(srcType.Name, dictForType);
+
+            return questionsToUser;
+        }
+
+        //private void addQuestionsToDictionaryCollection(Type )
+        public void UpdateNewCustomerInQueue(Dictionary<string, Dictionary<int, string>> i_CustomerDetails)
         {
             // ... update details in vehicle
-            string licensePlate = i_CustomerDetails["license_plate"];
-            m_VehiclesInGarage.Add(licensePlate, m_NewCustomerInQueue);
-            m_NewCustomerInQueue.Vehicle.LicensePlateId = licensePlate;
-            // m_NewCustomerInQueue = null ?
+            Dictionary<int, string> customerDetails = i_CustomerDetails["customerDetails"];
+            string licensePlate = customerDetails[1];
+            string model = customerDetails[2];
+
+            m_VehiclesInGarage.Add(licensePlate, m_CurrentlyTreatedCustomer);
+            m_CurrentlyTreatedCustomer.Vehicle.LicensePlateId = licensePlate;
+            m_CurrentlyTreatedCustomer.Vehicle.Model = model;
+            m_CurrentlyTreatedCustomer.Vehicle.Model = model;
+            Vehicle vehicle = m_CurrentlyTreatedCustomer.Vehicle;
+            vehicle.UpdateVehicleParameters(i_CustomerDetails);
+
+
+            // m_CurrentlyTreatedCustomer = null;
         }
 
         public StringBuilder ShowLicensePlateList()
@@ -54,7 +88,7 @@ namespace Ex03.GarageLogic
             StringBuilder response = new StringBuilder();
             int indexInList = 1;
 
-            foreach(string licensePlate in m_VehiclesInGarage.Keys)
+            foreach (string licensePlate in m_VehiclesInGarage.Keys)
             {
                 response.AppendFormat("{0}. {1}{2}", indexInList, licensePlate, Environment.NewLine);
                 ++indexInList;
@@ -70,7 +104,7 @@ namespace Ex03.GarageLogic
 
             foreach (KeyValuePair<string, CustomerTicket> item in m_VehiclesInGarage)
             {
-                if(item.Value.VehicleStatus == i_FilterByStatus)
+                if (item.Value.VehicleStatus == i_FilterByStatus)
                 {
                     response.AppendFormat("{0}. {1}{2}", counter, item.Key, Environment.NewLine);
                     ++counter;
@@ -92,7 +126,7 @@ namespace Ex03.GarageLogic
         {
             List<Wheel> wheelsInVehicle = m_VehiclesInGarage[i_LicensePlate].Vehicle.WheelsInVehicle;
 
-            foreach(Wheel wheel in wheelsInVehicle)
+            foreach (Wheel wheel in wheelsInVehicle)
             {
                 wheel.FillAirToMax();
             }

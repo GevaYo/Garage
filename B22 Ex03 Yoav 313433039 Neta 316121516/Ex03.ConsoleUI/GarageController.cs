@@ -12,14 +12,18 @@ namespace Ex03.ConsoleUI
         private readonly Garage r_Garage = new Garage();
         private readonly StringBuilder r_TypesOfVehicles;
         private readonly StringBuilder r_PossibleVehicleStatuses;
+        private readonly StringBuilder r_PossibleFuelTypes;
         private readonly StringBuilder r_MainMenu;
         private readonly int r_NumOfVehiclesTypes;
         private readonly int r_NumOfVehicleStatuses;
+        private readonly int r_NumOfFuelTypes;
+;
 
         public GarageController()
         {
             r_TypesOfVehicles = generateAvailableEnumsToMessage(typeof(eVehicleType), out r_NumOfVehiclesTypes);
             r_PossibleVehicleStatuses = generateAvailableEnumsToMessage(typeof(eVehicleStatus), out r_NumOfVehicleStatuses);
+            r_PossibleFuelTypes = generateAvailableEnumsToMessage(typeof(eFuelType), out r_NumOfFuelTypes);
             r_MainMenu = generateMenu();
         }
 
@@ -53,8 +57,7 @@ namespace Ex03.ConsoleUI
 
                 getCustomerDetails(out customerName, out customerPhone);
                 r_Garage.AddNewVehicleToGarage(vehicleType, customerName, customerPhone);
-                // ask more details....
-                /// Dictionary<string, object>
+                Dictionary<string, Dictionary<int, string>> detailsToAskUser = r_Garage.GetListOfQuestionsToInitiateVehicle();
 
                 /*
                  * 
@@ -211,7 +214,7 @@ namespace Ex03.ConsoleUI
                 ++optionNumber;
             }
 
-            o_NumOfEnums = optionNumber - 1;
+            o_NumOfEnums = optionNumber;
 
             return buildMag;
         }

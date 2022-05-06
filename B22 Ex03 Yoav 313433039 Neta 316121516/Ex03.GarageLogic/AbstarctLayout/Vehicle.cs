@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Ex03.GarageLogic
 {
-    internal class Vehicle
+    internal abstract class Vehicle
     {
+        protected static Dictionary<string, List<string>> s_ListOfSpecificParamsToUser = new Dictionary<string, List<string>>();
         protected readonly List<Wheel> r_WheelsInVehicle;
-        //protected Dictionary<string, Type>
         protected EnergySource m_EnergySource;
         protected string m_Model;
         protected string m_LicensePlateId;
@@ -51,6 +51,33 @@ namespace Ex03.GarageLogic
                 m_LicensePlateId = value;
             }
         }
+
+        public string Model
+        {
+            get
+            {
+                return m_Model;
+            }
+
+            set
+            {
+                m_Model = value;
+            }
+        }
+
+        public virtual void UpdateVehicleParameters(Dictionary<string, Dictionary<int, string>> i_CustomerDetails)
+        {
+            Dictionary<int, string> energySourceDetails = i_CustomerDetails[EnergySource.GetType().Name];
+            Dictionary<int, string> wheelDetails = i_CustomerDetails[WheelsInVehicle[0].GetType().Name];
+
+
+        }
+
+        private void updateWheelsParameters()
+        {
+
+        }
+
 
         /*public static bool operator ==(Vehicle obj1, Vehicle obj2)
         {
