@@ -27,21 +27,21 @@ namespace Ex03.GarageLogic
 
         static Motorcycle()
         {
-            List<string> parameters = new List<string>();
+            Dictionary<int, string> parameters = new Dictionary<int, string>();
             string className = typeof(Motorcycle).Name;
 
-            parameters.Add("What is your license type? (1- A ,2- A1 ,3- B1 ,4- BB)");
-            parameters.Add("What is your engine volume?");
-            s_ListOfSpecificParamsToUser.Add(className, parameters);
+            parameters.Add((int)eQuestionIndex.LICENSE_TYPE, "What is your license type? (1- A ,2- A1 ,3- B1 ,4- BB)");
+            parameters.Add((int)eQuestionIndex.ENGINE_VOLUME, "What is your engine volume?");
+            s_SpecificParamsToUser.Add(className, parameters);
         }
 
-        public Motorcycle(EnergySource i_EnergySource)
-            : base(2, 31)
+        public Motorcycle(EnergySource i_EnergySource, string io_LicensePlate, string io_VehicleModel)
+            : base(2, 31, io_LicensePlate, io_VehicleModel)
         {
             m_EnergySource = i_EnergySource;
         }
 
-        public int EngineVolume
+        /*public int EngineVolume
         {
             get
             {
@@ -55,36 +55,47 @@ namespace Ex03.GarageLogic
             {
                 return m_LicenseType.ToString();
             }
+        }*/
+
+        public override StringBuilder GetVehicleInfo()
+        {
+            StringBuilder info = new StringBuilder();
+
+            info.AppendFormat("Engine volume: {0}{1}", m_EngineVolume, Environment.NewLine);
+            info.AppendFormat("License type: {0}{1}", m_LicenseType, Environment.NewLine);
+
+            return info;
         }
 
-        public override void UpdateVehicleParameters(Dictionary<string, Dictionary<int, string>> i_CustomerDetails)
+        public override void UpdateVehicleParameters(string io_Response, int i_MotorcycleQuestion)
         {
-            Dictionary<int, string> vehicleDetails = i_CustomerDetails[this.GetType().Name];
-
-            validateLicenseType(vehicleDetails[(int)eQuestionIndex.LICENSE_TYPE]);
-            validateEngineVolume(vehicleDetails[(int)eQuestionIndex.ENGINE_VOLUME]);
-
-            base.UpdateVehicleParameters(i_CustomerDetails);
-
+            if (i_MotorcycleQuestion == (int)eQuestionIndex.LICENSE_TYPE)
+            {
+                validateLicenseType(io_Response);
+            }
+            else
+            {
+                validateEngineVolume(io_Response);
+            }
         }
 
         private void validateLicenseType(string i_LicenseTypeToCheck)
         {
-            eLicenseType validLicenseType;
+            int validLicenseType;
 
-            if (!Enum.TryParse<eLicenseType>(i_LicenseTypeToCheck, out validLicenseType))
+            if (!int.TryParse(i_LicenseTypeToCheck, out validLicenseType))
             {
-                /// throw ...
+                throw new FormatException("Please enter an integer");
             }
             else
             {
                 if (!Enum.IsDefined(typeof(eLicenseType), validLicenseType))
                 {
-                    /// throw ...
+                    throw new ValueOutOfRangeException(1, Enum.GetNames(typeof(eLicenseType)).Length);
                 }
             }
 
-            m_LicenseType = validLicenseType;
+            m_LicenseType = (eLicenseType)validLicenseType;
         }
 
         private void validateEngineVolume(string i_EngineVolumeToCheck)
@@ -93,7 +104,7 @@ namespace Ex03.GarageLogic
 
             if (!int.TryParse(i_EngineVolumeToCheck, out validEngineVolume))
             {
-                /// throw ...
+                throw new FormatException("Please enter an integer");
             }
 
             m_EngineVolume = validEngineVolume;

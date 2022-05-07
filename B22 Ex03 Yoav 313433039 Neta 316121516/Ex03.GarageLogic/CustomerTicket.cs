@@ -71,6 +71,21 @@ namespace Ex03.GarageLogic
             }
         }
 
+        public StringBuilder VehicleFullDetails()
+        {
+            StringBuilder vehicleInfo = new StringBuilder();
+
+            vehicleInfo.AppendFormat("License plate: {0}{1}", Vehicle.LicensePlateId, Environment.NewLine);
+            vehicleInfo.AppendFormat("Model: {0}{1}", Vehicle.Model, Environment.NewLine);
+            vehicleInfo.AppendFormat("Customer name: {0}{1}", CustomerName, Environment.NewLine);
+            vehicleInfo.AppendFormat("Customer phone number: {0}{1}", CustomerPhoneNumber, Environment.NewLine);
+            vehicleInfo.AppendFormat("Vehicle status: {0}{1}", VehicleStatus, Environment.NewLine);
+            vehicleInfo.Append(Vehicle.GetWheelInfo());
+            vehicleInfo.Append(Vehicle.EnergySource.GetEnergySourceInfo());
+
+            return vehicleInfo;
+        }
+
         /*public static bool operator ==(CustomerTicket obj1, CustomerTicket obj2)
         {
             bool areEqual = ReferenceEquals(obj1, obj2);

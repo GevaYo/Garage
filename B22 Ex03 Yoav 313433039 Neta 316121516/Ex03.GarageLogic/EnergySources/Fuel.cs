@@ -7,7 +7,7 @@ namespace Ex03.GarageLogic
 {
     internal class Fuel : EnergySource
     {
-        private enum eQuestionIndex
+        public enum eQuestionIndex
         {
             CURRENT_AMOUNT = 1,
             FUEL_TYPE,
@@ -18,13 +18,11 @@ namespace Ex03.GarageLogic
 
         static Fuel()
         {
-            List<string> parameters = new List<string>();
+            Dictionary<int, string> newParameters = new Dictionary<int, string>();
             string className = typeof(Fuel).Name;
 
-            parameters.Add("What is your current amount of fuel?");
-            parameters.Add("What is your vehicle fuel type?");
-            parameters.Add("How many liters would you like to add?");
-            s_ListOfSpecificParamsToUser.Add(className, parameters);
+            newParameters.Add((int)eQuestionIndex.CURRENT_AMOUNT, "What is your current amount of fuel?");
+            s_SpecificParamsToUser.Add(className, newParameters);
         }
 
         public Fuel(float i_MaxEnergyAmount, eFuelType i_FuelType)
@@ -33,49 +31,71 @@ namespace Ex03.GarageLogic
             r_FuelType = i_FuelType;
         }
 
-        public override void UpdateEnergyParameters(Dictionary<int, string> i_FuelDetails)
+        public override StringBuilder GetEnergySourceInfo()
         {
-            if (i_FuelDetails.ContainsKey((int)eQuestionIndex.FUEL_TYPE))
+            StringBuilder info = new StringBuilder();
+
+            info.AppendFormat("Fuel type: {0}{1}", r_FuelType, Environment.NewLine);
+            info.Append(base.GetEnergySourceInfo());
+
+            return info;
+        }
+
+        public override void UpdateEnergyParameters(string io_Response, int i_FuelQuestion)
+        {
+            if (i_FuelQuestion == (int)eQuestionIndex.FUEL_TYPE)
             {
-                validateFuelType(i_FuelDetails[(int)eQuestionIndex.FUEL_TYPE]);
-                validateAddedEnergyAmount(i_FuelDetails[(int)eQuestionIndex.REFUEL_AMOUNT]);
-                ///
+                validateFuelType(io_Response);
+            }
+            else if (i_FuelQuestion == (int)eQuestionIndex.REFUEL_AMOUNT)
+            {
+                validateAddedFuelAmount(io_Response);
             }
             else
             {
-                validateCurrentEnergyAmount(i_FuelDetails[(int)eQuestionIndex.CURRENT_AMOUNT]);
-
+                validateCurrentEnergyAmount(io_Response);
             }
+        }
+
+        private void validateAddedFuelAmount(string i_AddedAmountToCheck)
+        {
+            float validAmount;
+
+            if (!float.TryParse(i_AddedAmountToCheck, out validAmount))
+            {
+                throw new FormatException("Please enter a float value");
+            }
+            else
+            {
+                if (validAmount < 0 || CurrentEnergyAmount + validAmount > r_MaxEnergyAmount)
+                {
+                    throw new ValueOutOfRangeException(0, r_MaxEnergyAmount - CurrentEnergyAmount);
+                }
+            }
+
+            m_CurrentEnergyAmount += validAmount;
         }
 
         private void validateFuelType(string i_FuelTypeToCheck)
         {
-            eFuelType validFuelType;
+            int validFuelType;
 
-            if (!Enum.TryParse<eFuelType>(i_FuelTypeToCheck, out validFuelType))
+            if (!int.TryParse(i_FuelTypeToCheck, out validFuelType))
             {
-                /// throw ...
+                throw new FormatException("Please enter an integer");
             }
             else
             {
                 if (!Enum.IsDefined(typeof(eFuelType), validFuelType))
                 {
-                    /// throw ...
+                    throw new ValueOutOfRangeException(1, Enum.GetNames(typeof(eFuelType)).Length);
                 }
             }
 
-            if(r_FuelType != validFuelType)
+            if ((int)r_FuelType != validFuelType)
             {
-                /// throw ...
+                throw new ArgumentException("The fuel type does not match your vehicle type");
             }
         }
-
-
-        /* public override void AddEnergyToVehicle(float i_NumOfLitersToAdd)   // list
-         {
-             // , eFuelType i_FuelType
-             // i_FuelType == r_FuelType
-             // if yes => add fuel
-         }*/
     }
 }

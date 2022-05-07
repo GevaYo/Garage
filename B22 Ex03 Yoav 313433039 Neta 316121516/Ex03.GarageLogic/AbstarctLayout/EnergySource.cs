@@ -7,7 +7,7 @@ namespace Ex03.GarageLogic
 {
     internal abstract class EnergySource
     {
-        protected static Dictionary<string, List<string>> s_ListOfSpecificParamsToUser = new Dictionary<string, List<string>>();
+        protected static Dictionary<string, Dictionary<int, string>> s_SpecificParamsToUser = new Dictionary<string, Dictionary<int, string>>();
         protected readonly float r_MaxEnergyAmount;
         protected float m_CurrentEnergyAmount = 0;
 
@@ -24,46 +24,40 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public List<string> ListOfSpecificParamsToUser(string i_Key)
+        public virtual StringBuilder GetEnergySourceInfo()
         {
-            return s_ListOfSpecificParamsToUser[i_Key];
+            StringBuilder info = new StringBuilder();
+
+            info.AppendFormat("Max energy amount: {0}{1}", r_MaxEnergyAmount, Environment.NewLine);
+            info.AppendFormat("Current energy amount: {0}{1}", m_CurrentEnergyAmount, Environment.NewLine);
+
+            return info;
         }
 
-        public abstract void UpdateEnergyParameters(Dictionary<int, string> i_EnergySourceDetails);
+        public Dictionary<int, string> DictionaryOfSpecificParamsToUser(string i_Key)
+        {
+            return s_SpecificParamsToUser[i_Key];
+        }
+
+        public abstract void UpdateEnergyParameters(string io_Response, int i_EnergySourceQuestion);
 
         protected void validateCurrentEnergyAmount(string i_CurrentEnergyAmount)
         {
             float validAmount;
+
             if(!float.TryParse(i_CurrentEnergyAmount, out validAmount))
             {
-                /// throw...
+                throw new FormatException("Please enter a float value");
+            }
+            else
+            {
+                if (validAmount < 0 || validAmount > r_MaxEnergyAmount)
+                {
+                    throw new ValueOutOfRangeException(0, r_MaxEnergyAmount);
+                }
             }
 
             m_CurrentEnergyAmount = validAmount;
         }
-
-        protected void validateAddedEnergyAmount(string i_AddedAmountToCheck)
-        {
-            float validAmount;
-
-            if (!float.TryParse(i_AddedAmountToCheck, out validAmount))
-            {
-                /// throw...
-            }
-            else
-            {
-                if (CurrentEnergyAmount + validAmount > r_MaxEnergyAmount)
-                {
-                    /// throw...
-                }
-            }
-
-            m_CurrentEnergyAmount += validAmount;
-        }
-
-        /* public virtual void AddEnergyToVehicle(float i_EnergyToAdd) // list
-         {
-             m_CurrentEnergyAmount += i_EnergyToAdd;
-         }*/
     }
 }
