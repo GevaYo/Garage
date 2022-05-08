@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Ex03.GarageLogic
@@ -85,40 +83,5 @@ namespace Ex03.GarageLogic
 
             return vehicleInfo;
         }
-
-        /*public static bool operator ==(CustomerTicket obj1, CustomerTicket obj2)
-        {
-            bool areEqual = ReferenceEquals(obj1, obj2);
-
-            if (!areEqual)
-            {
-                areEqual = (ReferenceEquals(obj1, null) || ReferenceEquals(obj2, null)) ? false : obj1.Equals(obj2);
-            }
-
-            return areEqual;
-        }
-
-        public static bool operator !=(CustomerTicket obj1, CustomerTicket obj2)
-        {
-            return !(obj1 == obj2);
-        }
-
-        public override bool Equals(object obj)
-        {
-            bool equals = false;
-            CustomerTicket compareTo = obj as CustomerTicket;
-
-            if (compareTo != null)
-            {
-                equals = CustomerPhoneNumber == compareTo.CustomerPhoneNumber;
-            }
-
-            return equals;
-        }
-
-        public override int GetHashCode()
-        {
-            return CustomerPhoneNumber.GetHashCode();
-        }*/
     }
 }

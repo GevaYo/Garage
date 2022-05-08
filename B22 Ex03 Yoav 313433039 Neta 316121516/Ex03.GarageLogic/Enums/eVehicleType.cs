@@ -6,6 +6,6 @@
         FUEL_MOTORCYCLE,
         ELECTRIC_CAR,
         FUEL_CAR,
-        TRUCK
+        TRUCK,
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Ex03.GarageLogic
@@ -12,13 +11,13 @@ namespace Ex03.GarageLogic
             RED = 1,
             WHITE,
             GREEN,
-            BLUE
+            BLUE,
         }
 
         private enum eQuestionIndex
         {
             CAR_COLOR = 1,
-            NUM_OF_DOORS
+            NUM_OF_DOORS,
         }
 
         private byte m_NumOfDoors;

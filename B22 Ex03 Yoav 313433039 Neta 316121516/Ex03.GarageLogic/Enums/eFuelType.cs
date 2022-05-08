@@ -5,6 +5,6 @@
         Soler = 1,
         Octan95,
         Octan96,
-        Octan98
+        Octan98,
     }
 }

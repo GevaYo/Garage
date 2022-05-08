@@ -2,12 +2,12 @@
 {
     internal class VehicleFactory
     {
-        public static Vehicle CreateNewVehicle(eVehicleType i_VehicleType, string io_LicensePlate, string io_VehicleModel)
+        public static Vehicle CreateNewVehicle(eVehicleType io_VehicleType, string io_LicensePlate, string io_VehicleModel)
         {
             Vehicle vehicle = null;
-            EnergySource energySource = getEnergySourceByVehicleType(i_VehicleType);
+            EnergySource energySource = getEnergySourceByVehicleType(io_VehicleType);
 
-            switch (i_VehicleType)
+            switch (io_VehicleType)
             {
                 case eVehicleType.ELECTRIC_MOTORCYCLE:
                 case eVehicleType.FUEL_MOTORCYCLE:

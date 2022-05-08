@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Ex03.GarageLogic
 {
@@ -10,7 +9,7 @@ namespace Ex03.GarageLogic
         private enum eQuestionIndex
         {
             WHEEL_MANUFACTURER = 1,
-            CURRENT_AMOUNT
+            CURRENT_AMOUNT,
         }
 
         protected static Dictionary<string, Dictionary<int, string>> s_SpecificParamsToUser = new Dictionary<string, Dictionary<int, string>>();
@@ -60,14 +59,15 @@ namespace Ex03.GarageLogic
             {
                 validateManufacturer(io_Response);
             }
-            /*else if(i_WheelQuestion == (int)eQuestionIndex.REFILL_AIR)
-            {
-                validateAddedAmountOfAir(io_Response);
-            }*/
             else
             {
                 validateCurrentAirAmount(io_Response);
             }
+        }
+
+        public void FillAirToMax()
+        {
+            m_CurrentAirPressure = r_MaxAirPressure;
         }
 
         private void validateManufacturer(string i_Manufacturer)
@@ -79,25 +79,6 @@ namespace Ex03.GarageLogic
 
             m_ManufacturerName = i_Manufacturer;
         }
-
-        /*private void validateAddedAmountOfAir(string i_AddedAmount)
-        {
-            float validAmount;
-
-            if (!float.TryParse(i_AddedAmount, out validAmount))
-            {
-                throw new FormatException("Please enter a float value");
-            }
-            else
-            {
-                if (validAmount < 0 || m_CurrentAirPressure + validAmount > r_MaxAirPressure)
-                {
-                    throw new ValueOutOfRangeException(0, r_MaxAirPressure - m_CurrentAirPressure);
-                }
-            }
-
-            m_CurrentAirPressure += validAmount;
-        }*/
 
         private void validateCurrentAirAmount(string i_CurrentAmount)
         {
@@ -116,17 +97,6 @@ namespace Ex03.GarageLogic
             }
 
             m_CurrentAirPressure = validAmount;
-        }
-
-        public void FillAirToMax()
-        {
-            m_CurrentAirPressure = r_MaxAirPressure;
-        }
-
-        public void AddAirToWheel(float i_AirToAdd)
-        {
-		    // m_currentAirPressure + i_AirToAdd <= r_MaxAirPressure
-
         }
     }
 }

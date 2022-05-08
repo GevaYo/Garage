@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Ex03.GarageLogic
@@ -12,18 +11,17 @@ namespace Ex03.GarageLogic
             A = 1,
             A1,
             B1,
-            BB
+            BB,
         }
 
         private enum eQuestionIndex
         {
             LICENSE_TYPE = 1,
-            ENGINE_VOLUME
+            ENGINE_VOLUME,
         }
 
         private int m_EngineVolume;
         private eLicenseType m_LicenseType;
-        // TODO: private: static readonly / const for "2" (num of wheels), "31" max air pr..
 
         static Motorcycle()
         {
@@ -40,22 +38,6 @@ namespace Ex03.GarageLogic
         {
             m_EnergySource = i_EnergySource;
         }
-
-        /*public int EngineVolume
-        {
-            get
-            {
-                return m_EngineVolume;
-            }
-        }
-
-        public string LicenseType
-        {
-            get
-            {
-                return m_LicenseType.ToString();
-            }
-        }*/
 
         public override StringBuilder GetVehicleInfo()
         {

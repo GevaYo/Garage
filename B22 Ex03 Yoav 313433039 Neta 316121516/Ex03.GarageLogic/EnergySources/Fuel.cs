@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Ex03.GarageLogic
@@ -11,7 +10,7 @@ namespace Ex03.GarageLogic
         {
             CURRENT_AMOUNT = 1,
             FUEL_TYPE,
-            REFUEL_AMOUNT
+            REFUEL_AMOUNT,
         }
 
         private readonly eFuelType r_FuelType;

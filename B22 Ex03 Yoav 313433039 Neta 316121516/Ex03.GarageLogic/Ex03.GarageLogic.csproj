@@ -36,11 +36,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="eFuelType.cs" />
-    <Compile Include="eNumberOfWheelsByType.cs" />
-    <Compile Include="eSpecificVehicleCharacteristics.cs" />
-    <Compile Include="eVehicleStatus.cs" />
-    <Compile Include="eVehicleType.cs" />
+    <Compile Include="Enums\eFuelType.cs" />
+    <Compile Include="Enums\eVehicleStatus.cs" />
+    <Compile Include="Enums\eVehicleType.cs" />
     <Compile Include="Garage.cs" />
     <Compile Include="CustomerTicket.cs" />
     <Compile Include="ValueOutOfRangeException.cs" />

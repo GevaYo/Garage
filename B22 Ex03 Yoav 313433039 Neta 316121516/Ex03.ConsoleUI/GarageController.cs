@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using Ex03.GarageLogic;
 
@@ -9,74 +8,84 @@ namespace Ex03.ConsoleUI
 {
     public class GarageController
     {
-        private const string k_StallProgram = "Press any key to continue... ";
-        private const int k_NumOfMenuChoices = 9;
-        private readonly eMenuOptions[] r_MenuOptionsThatDoesntRequireLicensePlate = { eMenuOptions.SHOW_VEHICLE_LICENSE_PLATE_FULL_LIST, eMenuOptions.SHOW_FILLTERED_VEHICLE_LICENSE_PLATE_LIST, eMenuOptions.EXIT };
-        private readonly Garage r_Garage = new Garage();
-        private readonly StringBuilder r_TypesOfVehicles;
-        private readonly StringBuilder r_PossibleVehicleStatuses;
-        private readonly StringBuilder r_PossibleFuelTypes;
-        private readonly StringBuilder r_MainMenu;
-        private readonly int r_NumOfVehiclesTypes;
-        private readonly int r_NumOfVehicleStatuses;
-
-        public GarageController()
+        private enum eMenuOptions
         {
-            r_TypesOfVehicles = generateAvailableEnumsToMessage(typeof(eVehicleType), out r_NumOfVehiclesTypes);
-            r_PossibleVehicleStatuses = generateAvailableEnumsToMessage(typeof(eVehicleStatus), out r_NumOfVehicleStatuses);
-            r_PossibleFuelTypes = generateAvailableEnumsToMessage(typeof(eFuelType), out int numOfFuelTypes);
-            r_MainMenu = generateMenu();
+            ADD_NEW_VEHICLE_TO_GARAGE = 1,
+            SHOW_VEHICLES_FULL_LIST,
+            SHOW_FILLTERED_VEHICLES_LIST,
+            CHANGE_VEHICLE_STATUS_IN_GARAGE,
+            INFLATE_WHEELS_TO_MAX_CAPACITY,
+            FUEL_POWERED_VEHICLE_REFUELING,
+            ELECTRIC_POWERED_VEHICLE_CHARGE,
+            SHOW_VEHICLE_INFO,
+            EXIT,
         }
+
+        private static readonly eMenuOptions[] sr_MenuOptionsThatDoesntRequireLicensePlate = { eMenuOptions.SHOW_VEHICLES_FULL_LIST, eMenuOptions.SHOW_FILLTERED_VEHICLES_LIST, eMenuOptions.EXIT };
+        private readonly Garage r_Garage = new Garage();
 
         public void Run()
         {
             bool isTerminated = false;
+            eMenuOptions choiceToEnum;
 
             while (!isTerminated)
             {
                 Console.Clear();
-                Console.WriteLine(r_MainMenu);
-                int menuChoice = getUserInputFromMenu(k_NumOfMenuChoices);
+                Console.WriteLine(MessageContainer.MainMenu);
+                int menuChoice = getUserInputMenuChoice(MessageContainer.NumOfMenuChoices);
+                choiceToEnum = (eMenuOptions)menuChoice;
 
-                if(r_Garage.IsEmptyGarage() && menuChoice != 1 && menuChoice != 9)
+                if (r_Garage.IsEmptyGarage() && choiceToEnum != eMenuOptions.ADD_NEW_VEHICLE_TO_GARAGE && choiceToEnum != eMenuOptions.EXIT)
                 {
-                    string msg = string.Format("The garage is empty {0}{1}", Environment.NewLine, k_StallProgram);
-                    stallClearScreen(msg);
+                    printMessageAndSleep(MessageContainer.EmptyGarage);
                 }
                 else
                 {
-                    isTerminated = executeMenuAction(menuChoice);
+                    string licensePlate = getLicensePlateIfNeeded(choiceToEnum);
+
+                    if(validateAddEnargyAction(choiceToEnum, licensePlate))
+                    {
+                        isTerminated = executeMenuAction(choiceToEnum, licensePlate);
+                    }
+                    else
+                    {
+                        printMessageAndStallClearScreen(MessageContainer.RefillWrongEnergySource);
+                    }
                 }
+            }
+        }
+
+        private void addNewVehicleToGarageWrapper(string io_LicensePlate)
+        {
+            if (r_Garage.IsVehicleInGarage(io_LicensePlate))
+            {
+                r_Garage.ChangeVehicleStatus(eVehicleStatus.IN_REPAIR);
+                printMessageAndStallClearScreen(MessageContainer.VehicleInGarage);
+            }
+            else
+            {
+                addNewVehicleToGarage(io_LicensePlate);
             }
         }
 
         private void addNewVehicleToGarage(string io_LicensePlate)
         {
-            if (r_Garage.IsVehiclesInGarage(io_LicensePlate))
+            Console.Clear();
+            Console.WriteLine(MessageContainer.TypesOfVehicles);
+            int vehicleType = getUserInputMenuChoice(MessageContainer.NumOfVehiclesTypes);
+            string customerName = getUserInputStringByQuestion(eQuestionIndex.CUSTOMER_NAME);
+            string customerPhone = getUserInputStringByQuestion(eQuestionIndex.CUSTOMER_PHONE);
+            string vehicleModel = getUserInputStringByQuestion(eQuestionIndex.MODEL);
+
+            r_Garage.AddNewVehicleToGarage(vehicleType, io_LicensePlate, vehicleModel, customerName, customerPhone);
+            Dictionary<string, Dictionary<int, string>> detailsToAskUser = r_Garage.GetListOfQuestionsToInitiateVehicle();
+
+            foreach (KeyValuePair<string, Dictionary<int, string>> questionType in detailsToAskUser)
             {
-                r_Garage.ChangeVehicleStatus(io_LicensePlate, eVehicleStatus.IN_REPAIR);
-                string msg = string.Format("The vehicle is already in the garage {0}{1}", Environment.NewLine, k_StallProgram);
-
-                stallClearScreen(msg);
-            }
-            else
-            {
-                Console.WriteLine("Please choose your vehicle type:");
-                Console.WriteLine(r_TypesOfVehicles);
-                int vehicleType = getUserInputFromMenu(r_NumOfVehiclesTypes);
-                string customerName = getInputWithoutDependencyInAnObject("Please enter your name", 3);
-                string customerPhone = getInputWithoutDependencyInAnObject("Please enter your phone number", 4);
-                string vehicleModel = getInputWithoutDependencyInAnObject("What is your vehicle model?", 2);
-
-                r_Garage.AddNewVehicleToGarage(vehicleType, io_LicensePlate, vehicleModel, customerName, customerPhone);
-                Dictionary<string, Dictionary<int, string>> detailsToAskUser = r_Garage.GetListOfQuestionsToInitiateVehicle();
-
-                foreach (KeyValuePair<string, Dictionary<int, string>> questionType in detailsToAskUser)
+                foreach (KeyValuePair<int, string> question in questionType.Value)
                 {
-                    foreach (KeyValuePair<int, string> question in questionType.Value)
-                    {
-                        getSpecificQuestionFromUser(question.Value, question.Key, questionType.Key);
-                    }
+                    getSpecificQuestionFromUser(question.Value, question.Key, questionType.Key);
                 }
             }
         }
@@ -91,145 +100,115 @@ namespace Ex03.ConsoleUI
             }
             catch (Exception exception)
             {
-                executeCatch(exception.Message);
+                printMessageAndSleep(exception.Message);
                 getSpecificQuestionFromUser(io_Question, io_QuestionKey, io_QuestionTypeKey);
             }
-
-            //Console.Clear();
         }
 
         private void showVehicleLicensePlateFullList()
         {
-            string msg = string.Format("{0}{1}{2}", r_Garage.ShowLicensePlateList().ToString(), Environment.NewLine, k_StallProgram);
+            string licensePlateList = r_Garage.ShowLicensePlateList().ToString();
 
-            stallClearScreen(msg);
+            printMessageAndStallClearScreen(licensePlateList);
         }
 
         private void showFillteredVehicleLicensePlateList()
         {
             eVehicleStatus status = askForVehicleStatus();
-            string msg = string.Format("{0}{1}{2}", r_Garage.ShowLicensePlateList(status), Environment.NewLine, k_StallProgram);
+            string licensePlateList = r_Garage.ShowLicensePlateList(status).ToString();
 
-            stallClearScreen(msg);
+            printMessageAndStallClearScreen(licensePlateList);
         }
 
-        private void changeVehicleStatusInGarage(string io_LicensePlate)
+        private void changeVehicleStatusInGarage()
+        {
+            eVehicleStatus status = askForVehicleStatus();
+
+            r_Garage.ChangeVehicleStatus(status);
+        }
+
+        private void inflateWheelsToMaxCapacity()
+        {
+            r_Garage.InflateVehicleWheelsToMax();
+
+            printMessageAndStallClearScreen(MessageContainer.InflateDone);
+        }
+
+        private void fuelPoweredVehicleRefueling()
+        {
+            askForFuelType();
+            addEnergyAmountToVehicle(MessageContainer.EnterRefuel);
+        }
+
+        private void askForFuelType()
         {
             try
             {
-                eVehicleStatus status = askForVehicleStatus();
-                r_Garage.ChangeVehicleStatus(io_LicensePlate, status);
-            }
-            catch(ArgumentException exception)
-            {
-                executeCatch(exception.Message);
-                changeVehicleStatusInGarage(io_LicensePlate);
-            }
-        }
-
-        private void inflateWheelsToMaxCapacity(string io_LicensePlate)
-        {
-            try
-            {
-                r_Garage.InflateVehicleWheelsToMax(io_LicensePlate);
-                string msg = string.Format("Inflating is done {0}{1}", Environment.NewLine, k_StallProgram);
-
-                stallClearScreen(msg);
-            }
-            catch (ArgumentException exception)
-            {
-                executeCatch(exception.Message);
-                inflateWheelsToMaxCapacity(io_LicensePlate);
-            }
-        }
-
-        private void fuelPoweredVehicleRefueling(string io_LicensePlate)
-        {
-            try
-            {
-                Console.WriteLine("What is your vehicle fuel type?");
-                Console.WriteLine(r_PossibleFuelTypes);
+                Console.WriteLine(MessageContainer.EnterFuelType);
+                Console.WriteLine(MessageContainer.PossibleFuelTypes);
                 string fuelType = Console.ReadLine();
 
-                Console.WriteLine("How many liters would you like to add?");
-                string amountToAdd = Console.ReadLine();
-
-                r_Garage.AddEnergyToVehicle(io_LicensePlate, amountToAdd, fuelType);
+                r_Garage.ValidateRefuelType(fuelType);
             }
             catch (Exception exception)
             {
-                executeCatch(exception.Message);
-                fuelPoweredVehicleRefueling(io_LicensePlate);
+                printMessageAndSleep(exception.Message);
+                askForFuelType();
             }
         }
 
-        private void electricPoweredVehicleCharge(string io_LicensePlate)
+        private void addEnergyAmountToVehicle(string i_Question)
         {
             try
             {
-                Console.WriteLine("How many minutes of charging would you like to add?");
+                Console.WriteLine(i_Question);
                 string amountToAdd = Console.ReadLine();
 
-                r_Garage.AddEnergyToVehicle(io_LicensePlate, amountToAdd);
+                r_Garage.AddEnergyToVehicle(amountToAdd);
             }
             catch (Exception exception)
             {
-                executeCatch(exception.Message);
-                electricPoweredVehicleCharge(io_LicensePlate);
+                printMessageAndSleep(exception.Message);
+                addEnergyAmountToVehicle(i_Question);
             }
         }
 
-        private void showVehicleInfo(string io_LicensePlate)
+        private void showVehicleInfo()
         {
-            try
-            {
-                string msg = string.Format("{0}{1}{2}", r_Garage.ShowVehicleFullDetails(io_LicensePlate), Environment.NewLine, k_StallProgram);
+            string vehicleDetails = r_Garage.ShowVehicleFullDetails().ToString();
 
-                stallClearScreen(msg);
-            }
-            catch (Exception exception)
-            {
-                executeCatch(exception.Message);
-                showVehicleInfo(io_LicensePlate);
-            }
+            printMessageAndStallClearScreen(vehicleDetails);
         }
 
-        private bool executeMenuAction(int i_MenuChoice)
+        private bool executeMenuAction(eMenuOptions i_MenuChoice, string io_LicensePlate)
         {
             bool isTerminated = false;
-            string licensePlate = string.Empty;
-            eMenuOptions choiceToEnum = (eMenuOptions)i_MenuChoice;
 
-            if(!r_MenuOptionsThatDoesntRequireLicensePlate.Contains<eMenuOptions>(choiceToEnum))
-            {
-                 licensePlate = getInputWithoutDependencyInAnObject("Please enter your license plate", 1);
-            }
-
-            switch (choiceToEnum)
+            switch (i_MenuChoice)
             {
                 case eMenuOptions.ADD_NEW_VEHICLE_TO_GARAGE:
-                    addNewVehicleToGarage(licensePlate);
+                    addNewVehicleToGarageWrapper(io_LicensePlate);
                     break;
-                case eMenuOptions.SHOW_VEHICLE_LICENSE_PLATE_FULL_LIST:
+                case eMenuOptions.SHOW_VEHICLES_FULL_LIST:
                     showVehicleLicensePlateFullList();
                     break;
-                case eMenuOptions.SHOW_FILLTERED_VEHICLE_LICENSE_PLATE_LIST:
+                case eMenuOptions.SHOW_FILLTERED_VEHICLES_LIST:
                     showFillteredVehicleLicensePlateList();
                     break;
                 case eMenuOptions.CHANGE_VEHICLE_STATUS_IN_GARAGE:
-                    changeVehicleStatusInGarage(licensePlate);
+                    changeVehicleStatusInGarage();
                     break;
                 case eMenuOptions.INFLATE_WHEELS_TO_MAX_CAPACITY:
-                    inflateWheelsToMaxCapacity(licensePlate);
+                    inflateWheelsToMaxCapacity();
                     break;
                 case eMenuOptions.FUEL_POWERED_VEHICLE_REFUELING:
-                    fuelPoweredVehicleRefueling(licensePlate);
+                    fuelPoweredVehicleRefueling();
                     break;
                 case eMenuOptions.ELECTRIC_POWERED_VEHICLE_CHARGE:
-                    electricPoweredVehicleCharge(licensePlate);
+                    addEnergyAmountToVehicle(MessageContainer.EnterCharge);
                     break;
                 case eMenuOptions.SHOW_VEHICLE_INFO:
-                    showVehicleInfo(licensePlate);
+                    showVehicleInfo();
                     break;
                 case eMenuOptions.EXIT:
                     isTerminated = true;
@@ -239,31 +218,98 @@ namespace Ex03.ConsoleUI
             return isTerminated;
         }
 
-        private string getInputWithoutDependencyInAnObject(string io_Question, int io_QuestionKey)
+        private string getLicensePlateIfNeeded(eMenuOptions i_MenuChoice)
         {
-            Console.WriteLine(io_Question);
-            string input = Console.ReadLine();
+            string licensePlate = null;
 
-            try
+            if (!sr_MenuOptionsThatDoesntRequireLicensePlate.Contains<eMenuOptions>(i_MenuChoice))
             {
-                r_Garage.ValidateInputWithoutDependencyInAnObject(input, io_QuestionKey);
-            }
-            catch (ArgumentException exception)
-            {
-                executeCatch(exception.Message);
-                input = getInputWithoutDependencyInAnObject(io_Question, io_QuestionKey);
+                licensePlate = getUserInputStringByQuestion(eQuestionIndex.LICENSE_PLATE);
+                if (i_MenuChoice != eMenuOptions.ADD_NEW_VEHICLE_TO_GARAGE)
+                {
+                    while (!r_Garage.IsVehicleInGarage(licensePlate))
+                    {
+                        Console.WriteLine(MessageContainer.VehicleNotInGarage);
+                        licensePlate = getUserInputStringByQuestion(eQuestionIndex.LICENSE_PLATE);
+                    }
+                }
             }
 
-            Console.Clear();
-
-            return input;
+            return licensePlate;
         }
 
-        private int getUserInputFromMenu(int i_LastOptionInRange)
+        private bool validateAddEnargyAction(eMenuOptions i_MenuChoice, string i_LicensePlate)
+        {
+            bool isValid = true;
+
+            if (i_LicensePlate != null && i_MenuChoice != eMenuOptions.ADD_NEW_VEHICLE_TO_GARAGE)
+            {
+                bool isElectric = r_Garage.isElectricVehicle();
+
+                if ((isElectric && i_MenuChoice == eMenuOptions.FUEL_POWERED_VEHICLE_REFUELING) || (!isElectric && i_MenuChoice == eMenuOptions.ELECTRIC_POWERED_VEHICLE_CHARGE))
+                {
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+
+        private bool validateInputByQuestionKey(string io_InputToCheck, eQuestionIndex i_QuestionNumber)
+        {
+            bool isValid = false;
+
+            switch (i_QuestionNumber)
+            {
+                case eQuestionIndex.LICENSE_PLATE:
+                    isValid = io_InputToCheck.All(char.IsDigit);
+                    break;
+                case eQuestionIndex.MODEL:
+                    isValid = io_InputToCheck.All(char.IsLetterOrDigit);
+                    break;
+                case eQuestionIndex.CUSTOMER_NAME:
+                    isValid = io_InputToCheck.All(char.IsLetter);
+                    break;
+                case eQuestionIndex.CUSTOMER_PHONE:
+                    isValid = io_InputToCheck.All(char.IsDigit) && io_InputToCheck.Length == 10;
+                    break;
+            }
+
+            return isValid;
+        }
+
+        private string getUserInputStringByQuestion(eQuestionIndex io_QuestionKey)
+        {
+            bool isValid = false;
+            string questionToAsk = MessageContainer.GetQuestionIndex(io_QuestionKey);
+            string errorMsg = MessageContainer.GetQuestionErrorIndex(io_QuestionKey);
+
+            Console.WriteLine(questionToAsk);
+            string inputString = Console.ReadLine();
+
+            do
+            {
+                isValid = validateInputByQuestionKey(inputString, io_QuestionKey);
+                if (!isValid)
+                {
+                    Console.Clear();
+                    Console.WriteLine(MessageContainer.InvalidInput);
+                    Console.WriteLine(errorMsg);
+                    Console.WriteLine(questionToAsk);
+                    inputString = Console.ReadLine();
+                }
+            }
+            while (!isValid);
+
+            return inputString;
+        }
+
+        private int getUserInputMenuChoice(int i_LastOptionInRange)
         {
             bool isValid = false;
             int menuChoice;
-            Console.WriteLine("Please choose one of the above options: ");
+
+            Console.WriteLine(MessageContainer.ChooseAnOption);
             string inputString = Console.ReadLine();
 
             do
@@ -271,15 +317,13 @@ namespace Ex03.ConsoleUI
                 isValid = int.TryParse(inputString, out menuChoice);
                 if (!isValid || !isMenuInputValid(menuChoice, i_LastOptionInRange))
                 {
-                    Console.WriteLine("Invalid input");
-                    Console.WriteLine("Please choose one of the above options: ");
+                    Console.WriteLine(MessageContainer.InvalidInput);
+                    Console.WriteLine(MessageContainer.ChooseAnOption);
                     inputString = Console.ReadLine();
                     isValid = false;
                 }
             }
             while (!isValid);
-
-            Console.Clear();
 
             return menuChoice;
         }
@@ -289,70 +333,29 @@ namespace Ex03.ConsoleUI
             return i_MenuInput >= 1 && i_MenuInput <= i_LastOptionInRange;
         }
 
-        private void stallClearScreen(string i_MsgToUser)
-        {
-            Console.WriteLine(i_MsgToUser);
-            Console.ReadKey();
-            Console.Clear();
-        }
-
-        private void executeCatch(string i_MsgToUser)
-        {
-            Console.WriteLine(i_MsgToUser);
-            Thread.Sleep(2000);
-            Console.Clear();
-        }
-
         private eVehicleStatus askForVehicleStatus()
         {
-            Console.WriteLine("Please enter which status you want to filter by:");
-            Console.WriteLine(r_PossibleVehicleStatuses);
-            int vehicleStatus = getUserInputFromMenu(r_NumOfVehicleStatuses);
+            Console.WriteLine(MessageContainer.FilterByStatus);
+            Console.WriteLine(MessageContainer.PossibleVehicleStatuses);
+            int vehicleStatus = getUserInputMenuChoice(MessageContainer.NumOfVehicleStatuses);
 
             return (eVehicleStatus)vehicleStatus;
         }
 
-        private StringBuilder generateMenu()
+        private void printMessageAndStallClearScreen(string i_MsgToUser)
         {
-            StringBuilder mainMenu = new StringBuilder();
-
-            mainMenu.AppendFormat("Welcome! Please choose your desired action by entering the option number {0}{1}", Environment.NewLine, Environment.NewLine);
-            mainMenu.AppendFormat("1. Enter a new vehicle to garage {0}", Environment.NewLine);
-            mainMenu.AppendFormat("2. View the vehicle's list in the garage by license number {0}", Environment.NewLine);
-            mainMenu.AppendFormat("3. View a filtered vehicle's list by status {0}", Environment.NewLine);
-            mainMenu.AppendFormat("4. Change a vehicle's status {0}", Environment.NewLine);
-            mainMenu.AppendFormat("5. Inflate a vehicle's wheels to the maximum {0}", Environment.NewLine);
-            mainMenu.AppendFormat("6. Fuel-powered vehicle refueling  {0}", Environment.NewLine);
-            mainMenu.AppendFormat("7. Electric-powered vehicle charge {0}", Environment.NewLine);
-            mainMenu.AppendFormat("8. View entire vehicle details by license number {0}", Environment.NewLine);
-            mainMenu.AppendFormat("9. Exit {0}", Environment.NewLine);
-
-            return mainMenu;
+            Console.WriteLine(i_MsgToUser);
+            Console.WriteLine(Environment.NewLine);
+            Console.WriteLine(MessageContainer.StallProgram);
+            Console.ReadKey();
+            Console.Clear();
         }
 
-        private string formatEnumStringToMenuOption(string io_Value)
+        private void printMessageAndSleep(string i_MsgToUser)
         {
-            StringBuilder format = new StringBuilder(io_Value.Replace("_", " ").ToLower());
-            format[0] = char.ToUpper(format[0]);
-
-            return format.ToString();
-        }
-
-        private StringBuilder generateAvailableEnumsToMessage(Type io_EnumType, out int o_NumOfEnums)
-        {
-            StringBuilder buildMag = new StringBuilder();
-            int optionNumber = 1;
-
-            foreach (string type in Enum.GetNames(io_EnumType))
-            {
-                string format = formatEnumStringToMenuOption(type);
-                buildMag.AppendFormat("{0}. {1}{2}", optionNumber, format, Environment.NewLine);
-                ++optionNumber;
-            }
-
-            o_NumOfEnums = optionNumber;
-
-            return buildMag;
+            Console.WriteLine(i_MsgToUser);
+            Thread.Sleep(2000);
+            Console.Clear();
         }
     }
 }

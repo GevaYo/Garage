@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Ex03.GarageLogic
@@ -10,11 +9,9 @@ namespace Ex03.GarageLogic
         private enum eQuestionIndex
         {
             IS_DELIVERING_CARGO_IN_COOLING = 1,
-            CARGO_CAPACITY
+            CARGO_CAPACITY,
         }
 
-        /*protected const int r_NumOfWheels = 16;
-        protected const float r_MaxAirPressure = 24;*/
         private bool m_IsDeliveringCargoInCooling;
         private float m_CargoCapacity;
 
