@@ -40,35 +40,19 @@ namespace Ex03.GarageLogic
             EnergySource energySource = m_CurrentlyTreatedCustomer.Vehicle.EnergySource;
             Wheel wheel = m_CurrentlyTreatedCustomer.Vehicle.WheelsInVehicle[0];
 
-            addTypeQuestionsToDictionary(questionsToUser, vehicle);
-            addTypeQuestionsToDictionary(questionsToUser, energySource);
-            addTypeQuestionsToDictionary(questionsToUser, wheel);
+            string srcType = vehicle.GetType().Name;
+            Dictionary<int, string> questionsByType = vehicle.DictionaryOfSpecificParamsToUser(srcType);
+            questionsToUser.Add(srcType, questionsByType);
+
+            srcType = energySource.GetType().Name;
+            questionsByType = energySource.DictionaryOfSpecificParamsToUser(srcType);
+            questionsToUser.Add(srcType, questionsByType);
+
+            srcType = wheel.GetType().Name;
+            questionsByType = wheel.SpecificParamsToUser;
+            questionsToUser.Add(srcType, questionsByType);
 
             return questionsToUser;
-        }
-
-        private void addTypeQuestionsToDictionary(Dictionary<string, Dictionary<int, string>> o_QuestionsToUser, object i_Obj)
-        {
-            string srcType = i_Obj.GetType().Name;
-            Dictionary<int, string> questionsByType = null;
-            EnergySource energySource = i_Obj as EnergySource;
-            Vehicle vehicle = i_Obj as Vehicle;
-            Wheel wheel = i_Obj as Wheel;
-
-            if(vehicle != null)
-            {
-                questionsByType = vehicle.DictionaryOfSpecificParamsToUser(srcType);
-            }
-            else if(energySource != null)
-            {
-                questionsByType = energySource.DictionaryOfSpecificParamsToUser(srcType);
-            }
-            else
-            {
-                questionsByType = wheel.DictionaryOfSpecificParamsToUser(srcType);
-            }
-
-            o_QuestionsToUser.Add(srcType, questionsByType);
         }
 
         public void ValidateInputInNewVehicle(string io_InputStrFromUser, string i_ClassName, int io_QuestionNumber)
@@ -150,9 +134,9 @@ namespace Ex03.GarageLogic
         public void AddEnergyToVehicle(string io_AmountToAdd)
         {
             EnergySource energySource = m_CurrentlyTreatedCustomer.Vehicle.EnergySource;
-            int index = energySource is Electric ? (int)Electric.eQuestionIndex.RECHARGE_AMOUNT : (int)Fuel.eQuestionIndex.REFUEL_AMOUNT;
+            int energyIndex = energySource is Electric ? (int)Electric.eQuestionIndex.RECHARGE_AMOUNT : (int)Fuel.eQuestionIndex.REFUEL_AMOUNT;
 
-            energySource.UpdateEnergyParameters(io_AmountToAdd, index);
+            energySource.UpdateEnergyParameters(io_AmountToAdd, energyIndex);
         }
 
         public StringBuilder ShowVehicleFullDetails()

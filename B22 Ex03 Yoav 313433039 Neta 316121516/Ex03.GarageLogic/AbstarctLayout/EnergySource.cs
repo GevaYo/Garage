@@ -40,23 +40,36 @@ namespace Ex03.GarageLogic
 
         public abstract void UpdateEnergyParameters(string io_Response, int i_EnergySourceQuestion);
 
-        protected void validateCurrentEnergyAmount(string i_CurrentEnergyAmount)
+        protected float validateParseToFloat(string i_CurrentEnergyAmount)
         {
             float validAmount;
 
-            if(!float.TryParse(i_CurrentEnergyAmount, out validAmount))
+            if (!float.TryParse(i_CurrentEnergyAmount, out validAmount))
             {
                 throw new FormatException("Please enter a float value");
             }
-            else
+
+            return validAmount;
+        }
+
+        protected void validateAddedEnergyAmount(float i_AddedAmountToCheck, float io_OutOfRange)
+        {
+            if (i_AddedAmountToCheck < 0 || CurrentEnergyAmount + i_AddedAmountToCheck > r_MaxEnergyAmount)
             {
-                if (validAmount < 0 || validAmount > r_MaxEnergyAmount)
-                {
-                    throw new ValueOutOfRangeException(0, r_MaxEnergyAmount);
-                }
+                throw new ValueOutOfRangeException(0, io_OutOfRange);
             }
 
-            m_CurrentEnergyAmount = validAmount;
+            m_CurrentEnergyAmount += i_AddedAmountToCheck;
+        }
+
+        protected void validateCurrentEnergyAmount(float i_CurrentEnergyAmount)
+        {
+            if (i_CurrentEnergyAmount < 0 || i_CurrentEnergyAmount > r_MaxEnergyAmount)
+            {
+                throw new ValueOutOfRangeException(0, r_MaxEnergyAmount);
+            }
+
+            m_CurrentEnergyAmount = i_CurrentEnergyAmount;
         }
     }
 }

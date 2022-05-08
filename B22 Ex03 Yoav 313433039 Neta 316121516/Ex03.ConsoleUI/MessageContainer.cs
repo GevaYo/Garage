@@ -4,14 +4,6 @@ using Ex03.GarageLogic;
 
 namespace Ex03.ConsoleUI
 {
-    public enum eQuestionIndex
-    {
-        LICENSE_PLATE = 1,
-        MODEL,
-        CUSTOMER_NAME,
-        CUSTOMER_PHONE,
-    }
-
     public class MessageContainer
     {
         private const string k_VehicleNotInGarage = "The vehicle is not in the garage";
@@ -68,38 +60,6 @@ namespace Ex03.ConsoleUI
             }
         }
 
-        /*public static string LicensePlateFormatError
-        {
-            get
-            {
-                return k_LicensePlateFormatError;
-            }
-        }
-
-        public static string ModelFormatError
-        {
-            get
-            {
-                return k_ModelFormatError;
-            }
-        }
-
-        public static string NameFormatError
-        {
-            get
-            {
-                return k_NameFormatError;
-            }
-        }
-
-        public static string PhoneFormatError
-        {
-            get
-            {
-                return k_PhoneFormatError;
-            }
-        }*/
-
         public static string StallProgram
         {
             get
@@ -131,38 +91,6 @@ namespace Ex03.ConsoleUI
                 return k_ChooseAnOption;
             }
         }
-
-        /*public static string EnterLicensePlate
-        {
-            get
-            {
-                return k_EnterLicensePlate;
-            }
-        }
-
-        public static string EnterName
-        {
-            get
-            {
-                return k_EnterName;
-            }
-        }
-
-        public static string EnterPhone
-        {
-            get
-            {
-                return k_EnterPhone;
-            }
-        }
-
-        public static string EnterModel
-        {
-            get
-            {
-                return k_EnterModel;
-            }
-        }*/
 
         public static string EnterFuelType
         {
@@ -291,8 +219,8 @@ namespace Ex03.ConsoleUI
             mainMenu.AppendFormat("3. View a filtered vehicle's list by status {0}", Environment.NewLine);
             mainMenu.AppendFormat("4. Change a vehicle's status {0}", Environment.NewLine);
             mainMenu.AppendFormat("5. Inflate a vehicle's wheels to the maximum {0}", Environment.NewLine);
-            mainMenu.AppendFormat("6. Fuel-powered vehicle refueling  {0}", Environment.NewLine);
-            mainMenu.AppendFormat("7. Electric-powered vehicle charge {0}", Environment.NewLine);
+            mainMenu.AppendFormat("6. Refueling fuel-powered vehicle  {0}", Environment.NewLine);
+            mainMenu.AppendFormat("7. Charge electric-powered vehicle (in minutes) {0}", Environment.NewLine);
             mainMenu.AppendFormat("8. View entire vehicle details by license number {0}", Environment.NewLine);
             mainMenu.AppendFormat("9. Exit {0}", Environment.NewLine);
 

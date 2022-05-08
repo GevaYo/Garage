@@ -16,7 +16,7 @@ namespace Ex03.GarageLogic
             Dictionary<int, string> newParameters = new Dictionary<int, string>();
             string className = typeof(Electric).Name;
 
-            newParameters.Add((int)eQuestionIndex.CURRENT_AMOUNT, "What is your current energy percentage?");
+            newParameters.Add((int)eQuestionIndex.CURRENT_AMOUNT, "What is your current energy percentage (in hours)?");
             s_SpecificParamsToUser.Add(className, newParameters);
         }
 
@@ -25,17 +25,20 @@ namespace Ex03.GarageLogic
 
         public override void UpdateEnergyParameters(string io_Response, int i_ElectricQuestion)
         {
+            float vaildAmount = validateParseToFloat(io_Response);
+
             if (i_ElectricQuestion == (int)eQuestionIndex.RECHARGE_AMOUNT)
             {
-                validateAddedMinutesAmount(io_Response);
+                vaildAmount /= 60;
+                validateAddedEnergyAmount(vaildAmount, (r_MaxEnergyAmount - CurrentEnergyAmount) * 60);
             }
             else
             {
-                validateCurrentEnergyAmount(io_Response);
+                validateCurrentEnergyAmount(vaildAmount);
             }
         }
 
-        private void validateAddedMinutesAmount(string i_AddedMinutesToCheck)
+        /*private void validateAddedMinutesAmount(string i_AddedMinutesToCheck)
         {
             float validAmount;
 
@@ -52,6 +55,6 @@ namespace Ex03.GarageLogic
             }
 
             m_CurrentEnergyAmount += validAmount;
-        }
+        }*/
     }
 }

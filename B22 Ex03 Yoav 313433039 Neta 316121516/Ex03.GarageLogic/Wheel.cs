@@ -12,19 +12,15 @@ namespace Ex03.GarageLogic
             CURRENT_AMOUNT,
         }
 
-        protected static Dictionary<string, Dictionary<int, string>> s_SpecificParamsToUser = new Dictionary<string, Dictionary<int, string>>();
+        protected static Dictionary<int, string> s_SpecificParamsToUser = new Dictionary<int, string>();
         private readonly float r_MaxAirPressure;
         private string m_ManufacturerName;
         private float m_CurrentAirPressure;
 
         static Wheel()
         {
-            Dictionary<int, string> parameters = new Dictionary<int, string>();
-            string className = typeof(Wheel).Name;
-
-            parameters.Add((int)eQuestionIndex.WHEEL_MANUFACTURER, "Who is you wheel manufacturer?");
-            parameters.Add((int)eQuestionIndex.CURRENT_AMOUNT, "What is your wheel current air pressure?");
-            s_SpecificParamsToUser.Add(className, parameters);
+            s_SpecificParamsToUser.Add((int)eQuestionIndex.WHEEL_MANUFACTURER, "Who is you wheel manufacturer?");
+            s_SpecificParamsToUser.Add((int)eQuestionIndex.CURRENT_AMOUNT, "What is your wheel current air pressure?");
         }
 
         public Wheel(float i_MaxAirPressure)
@@ -48,9 +44,12 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public Dictionary<int, string> DictionaryOfSpecificParamsToUser(string i_Key)
+        public Dictionary<int, string> SpecificParamsToUser
         {
-            return s_SpecificParamsToUser[i_Key];
+            get
+            {
+                return s_SpecificParamsToUser;
+            }
         }
 
         public void UpdateWheelParameters(string io_Response, int i_WheelQuestion)

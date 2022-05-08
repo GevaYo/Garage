@@ -46,17 +46,22 @@ namespace Ex03.GarageLogic
             {
                 validateFuelType(io_Response);
             }
-            else if (i_FuelQuestion == (int)eQuestionIndex.REFUEL_AMOUNT)
-            {
-                validateAddedFuelAmount(io_Response);
-            }
             else
             {
-                validateCurrentEnergyAmount(io_Response);
+                float vaildAmount = validateParseToFloat(io_Response);
+
+                if (i_FuelQuestion == (int)eQuestionIndex.REFUEL_AMOUNT)
+                {
+                    validateAddedEnergyAmount(vaildAmount, r_MaxEnergyAmount - CurrentEnergyAmount);
+                }
+                else
+                {
+                    validateCurrentEnergyAmount(vaildAmount);
+                }
             }
         }
 
-        private void validateAddedFuelAmount(string i_AddedAmountToCheck)
+        /*private void validateAddedFuelAmount(string i_AddedAmountToCheck)
         {
             float validAmount;
 
@@ -73,7 +78,7 @@ namespace Ex03.GarageLogic
             }
 
             m_CurrentEnergyAmount += validAmount;
-        }
+        }*/
 
         private void validateFuelType(string i_FuelTypeToCheck)
         {

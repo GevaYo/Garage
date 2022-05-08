@@ -265,10 +265,10 @@ namespace Ex03.ConsoleUI
                     isValid = io_InputToCheck.All(char.IsDigit);
                     break;
                 case eQuestionIndex.MODEL:
-                    isValid = io_InputToCheck.All(char.IsLetterOrDigit);
+                    isValid = io_InputToCheck.Replace(" ", string.Empty).All(char.IsLetterOrDigit);
                     break;
                 case eQuestionIndex.CUSTOMER_NAME:
-                    isValid = io_InputToCheck.All(char.IsLetter);
+                    isValid = io_InputToCheck.Replace(" ", string.Empty).All(char.IsLetter);
                     break;
                 case eQuestionIndex.CUSTOMER_PHONE:
                     isValid = io_InputToCheck.All(char.IsDigit) && io_InputToCheck.Length == 10;
