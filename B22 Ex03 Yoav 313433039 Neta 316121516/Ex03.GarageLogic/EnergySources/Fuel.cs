@@ -61,25 +61,6 @@ namespace Ex03.GarageLogic
             }
         }
 
-        /*private void validateAddedFuelAmount(string i_AddedAmountToCheck)
-        {
-            float validAmount;
-
-            if (!float.TryParse(i_AddedAmountToCheck, out validAmount))
-            {
-                throw new FormatException("Please enter a float value");
-            }
-            else
-            {
-                if (validAmount < 0 || CurrentEnergyAmount + validAmount > r_MaxEnergyAmount)
-                {
-                    throw new ValueOutOfRangeException(0, r_MaxEnergyAmount - CurrentEnergyAmount);
-                }
-            }
-
-            m_CurrentEnergyAmount += validAmount;
-        }*/
-
         private void validateFuelType(string i_FuelTypeToCheck)
         {
             int validFuelType;

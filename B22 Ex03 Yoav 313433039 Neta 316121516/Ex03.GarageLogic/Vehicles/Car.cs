@@ -34,7 +34,7 @@ namespace Ex03.GarageLogic
         }
 
         public Car(EnergySource i_EnergySource, string io_LicensePlate, string io_VehicleModel)
-            : base(4, 29, io_LicensePlate, io_VehicleModel)       // int i_NumOfWheels, float i_MaxAirPressure
+            : base(4, 29, io_LicensePlate, io_VehicleModel)
         {
             m_EnergySource = i_EnergySource;
         }

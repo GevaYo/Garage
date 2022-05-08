@@ -21,7 +21,9 @@ namespace Ex03.GarageLogic
         }
 
         public Electric(float i_MaxEnergyAmount)
-            : base(i_MaxEnergyAmount) { }
+            : base(i_MaxEnergyAmount)
+        {
+        }
 
         public override void UpdateEnergyParameters(string io_Response, int i_ElectricQuestion)
         {
@@ -37,24 +39,5 @@ namespace Ex03.GarageLogic
                 validateCurrentEnergyAmount(vaildAmount);
             }
         }
-
-        /*private void validateAddedMinutesAmount(string i_AddedMinutesToCheck)
-        {
-            float validAmount;
-
-            if (!float.TryParse(i_AddedMinutesToCheck, out validAmount))
-            {
-                throw new FormatException("Please enter a float value");
-            }
-            else
-            {
-                if (validAmount < 0 || CurrentEnergyAmount + (validAmount / 60) > r_MaxEnergyAmount)
-                {
-                    throw new ValueOutOfRangeException(0, (r_MaxEnergyAmount - CurrentEnergyAmount) * 60);
-                }
-            }
-
-            m_CurrentEnergyAmount += validAmount;
-        }*/
     }
 }
